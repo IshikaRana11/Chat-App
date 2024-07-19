@@ -10,7 +10,7 @@ export default function LogoutButton() {
           onClick={logout}
         />
       ) : (
-        <spam className="loading loading-spinner"></spam>
+        <span className="loading loading-spinner"></span>
       )}
     </div>
   );

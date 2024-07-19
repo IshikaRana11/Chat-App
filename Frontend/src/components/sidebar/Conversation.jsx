@@ -1,7 +1,17 @@
+// Conversation.jsx
+import React from "react";
+import { useSocketContext } from "../../context/SocketContext";
 import useConversation from "../../zustand/useConversation";
-export default function Conversation({ conversation, lastIdx, emoji }) {
+
+const Conversation = ({ conversation, lastIdx, emoji }) => {
   const { selectedConversation, setSelectedConversation } = useConversation();
   const isSelected = selectedConversation?._id === conversation._id;
+  const { onlineUsers } = useSocketContext();
+
+  // Safeguard to ensure onlineUsers is defined and is an array
+  const isOnline =
+    Array.isArray(onlineUsers) && onlineUsers.includes(conversation._id);
+
   return (
     <>
       <div
@@ -10,7 +20,7 @@ export default function Conversation({ conversation, lastIdx, emoji }) {
         }`}
         onClick={() => setSelectedConversation(conversation)}
       >
-        <div className="avatar online">
+        <div className={`avatar ${isOnline ? "online" : ""}`}>
           <div className="w-11 rounded-full">
             <img src={conversation.profilePic} alt="Profile" />
           </div>
@@ -25,4 +35,6 @@ export default function Conversation({ conversation, lastIdx, emoji }) {
       {!lastIdx && <div className="divider my-0 py-0 h-1" />}
     </>
   );
-}
+};
+
+export default Conversation;
