@@ -13,13 +13,14 @@ export const sendMessage = async (req, resp) => {
         participants: [senderId, receiverId],
       });
     }
+    console.log("ishika conversastion", conversation);
     const newMessage = new Message({
       senderId,
       receiverId,
       message,
     });
     if (newMessage) {
-      conversation.messages.push(newMessage._id);
+      if (conversation.messages) conversation.messages.push(newMessage._id);
     }
     await Promise.all([conversation.save(), newMessage.save()]);
     resp.status(201).json(newMessage);
@@ -38,8 +39,10 @@ export const getMessage = async (req, resp) => {
     }).populate("messages");
 
     if (!conversation) resp.status(200).json([]);
-    const messages = conversation.messages;
-    resp.status(200).json(messages);
+    else {
+      const messages = conversation.messages;
+      resp.status(200).json(messages);
+    }
   } catch (err) {
     console.log("error while sending", err.message);
     resp.status(500).json({ message: "INTERNAL SERVER ERROR" });

@@ -1,5 +1,16 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import useLogin from "../../Hooks/useLogin";
 const Login = () => {
+  const [Username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { loading, login } = useLogin();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await login(Username, password);
+  };
   return (
     <div className="flex flex-col items-center justify-center sm:h-[300px] md:h-auto md:w-[400px]">
       <div className="h-full w-full bg-blue-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-20 border border-gray-100">
@@ -7,7 +18,7 @@ const Login = () => {
           Login
           <span className="text-blue-500">ChatApp</span>
         </h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div>
             <label className="label p-2">
               <span className="text-base label-text text-indigo-900">
@@ -18,6 +29,8 @@ const Login = () => {
               type="text"
               placeholder="Enter Username"
               className="w-full input input-bordered h-10"
+              value={Username}
+              onChange={(e) => setUsername(e.target.value)}
             />
             <label className="label ">
               <span className="text-base label-text text-indigo-900">
@@ -28,16 +41,27 @@ const Login = () => {
               type="password"
               placeholder="Enter Password"
               className="w-full input input-bordered h-10"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <a
-            href="#"
+          <Link
+            to={"/Signup"}
             className="text-sm text-gray-800 hover:underline hover:text-blue-800 mt-2 inline-block"
           >
             {"dont't"}have an account?
-          </a>
+          </Link>
           <div>
-            <button className="btn btn-block btn-sm mt-2">LOGIN</button>
+            <button className="btn btn-block btn-sm mt-2" disabled={loading}>
+              {loading ? (
+                <span
+                  className="loading loading-spinner
+              "
+                ></span>
+              ) : (
+                "Login"
+              )}
+            </button>
           </div>
         </form>
       </div>

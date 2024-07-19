@@ -1,17 +1,39 @@
 import Messages from "./Messages";
+import useConversation from "../../zustand/useConversation";
 import MessageInput from "./MessageInput";
 import { TiMessages } from "react-icons/ti";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 export default function MessageContainer() {
-  const noChatSelected = false;
+  const { selectedConversation, setSelectedConversation, setMessages } =
+    useConversation();
+
+  useEffect(() => {
+    async function getMessages() {
+      try {
+        const res = await fetch(`/api/messages/${selectedConversation._id}`);
+        if (!res.ok) throw new Error("not getting response...");
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        setMessages(data);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    }
+    getMessages();
+    return () => setSelectedConversation(null);
+  }, [setSelectedConversation]);
   return (
     <div className="md:min-w-[450px] flex flex-col">
-      {noChatSelected ? (
+      {!selectedConversation ? ( //if no chat selected was true
         <NoChatSelected />
       ) : (
         <>
           <div className="bg-slate-500 px-4 py-2 mb-2 flex items-center">
             <span className="label-text mr-2">To:</span>
-            <span className="text-gray-900 font-bold">John Doe</span>
+            <span className="text-gray-900 font-bold">
+              {selectedConversation.fullname}
+            </span>
           </div>
           <Messages />
           <MessageInput />

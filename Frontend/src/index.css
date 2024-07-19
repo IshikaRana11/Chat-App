@@ -8,7 +8,7 @@ body {
 }
 
 body {
-  background: url("../public/moon.jpeg");
+  background: url("../moon.jpeg");
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;

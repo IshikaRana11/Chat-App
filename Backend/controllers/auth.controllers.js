@@ -3,7 +3,6 @@ import bycrptjs from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/generateToken.js";
 export const signupUser = async (req, resp) => {
   try {
-    console.log(req.body);
     const { fullname, username, password, confirmPassword, gender } = req.body;
     if (password != confirmPassword) {
       return resp.status(400).json({ error: "wrong password" });
@@ -15,8 +14,10 @@ export const signupUser = async (req, resp) => {
     //hash password here
     const salt = await bycrptjs.genSalt(10);
     const hashPassword = await bycrptjs.hash(password, salt);
+
     const boyprofilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
     const girlprofilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
+
     const newUser = new User({
       fullname,
       username,
@@ -24,11 +25,10 @@ export const signupUser = async (req, resp) => {
       gender,
       profilePic: gender === "female" ? girlprofilePic : boyprofilePic,
     });
-
     if (newUser) {
       generateTokenAndSetCookie(newUser._id, resp);
       await newUser.save();
-
+      console.log(req.body);
       resp.status(201).json({
         _id: newUser._id,
         fullname: newUser.fullname,
