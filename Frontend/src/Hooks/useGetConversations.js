@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 const useGetConversations = () => {
   const [loading, setLoading] = useState(false);
   const [conversations, setConversations] = useState([]);
@@ -8,9 +8,9 @@ const useGetConversations = () => {
     const getConversations = async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/users");
+        const res = await fetch('/api/users');
         if (!res.ok) {
-          throw new Error("cannot get users" + res.statusText);
+          throw new Error('cannot get users' + res.statusText);
         }
         const data = await res.json();
         console.log(data);

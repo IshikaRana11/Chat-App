@@ -1,15 +1,15 @@
-import User from "../models/user.model.js";
-import bycrptjs from "bcryptjs";
-import generateTokenAndSetCookie from "../utils/generateToken.js";
+import User from '../models/user.model.js';
+import bycrptjs from 'bcryptjs';
+import generateTokenAndSetCookie from '../utils/generateToken.js';
 export const signupUser = async (req, resp) => {
   try {
     const { fullname, username, password, confirmPassword, gender } = req.body;
     if (password != confirmPassword) {
-      return resp.status(400).json({ error: "wrong password" });
+      return resp.status(400).json({ error: 'wrong password' });
     }
     const user = await User.findOne({ username });
     if (user) {
-      return resp.status(400).json({ error: "user already exist" });
+      return resp.status(400).json({ error: 'user already exist' });
     }
     //hash password here
     const salt = await bycrptjs.genSalt(10);
@@ -23,7 +23,7 @@ export const signupUser = async (req, resp) => {
       username,
       password: hashPassword,
       gender,
-      profilePic: gender === "female" ? girlprofilePic : boyprofilePic,
+      profilePic: gender === 'female' ? girlprofilePic : boyprofilePic,
     });
     if (newUser) {
       generateTokenAndSetCookie(newUser._id, resp);
@@ -36,11 +36,11 @@ export const signupUser = async (req, resp) => {
         profilePic: newUser.profilePic,
       });
     } else {
-      resp.status(400).json({ error: "Invalid user data" });
+      resp.status(400).json({ error: 'Invalid user data' });
     }
   } catch (err) {
-    console.log("error in signup controller", err);
-    resp.status(500).json({ err: "Internal server error" });
+    console.log('error in signup controller', err);
+    resp.status(500).json({ err: 'Internal server error' });
   }
 };
 
@@ -50,10 +50,11 @@ export const loginUser = async (req, resp) => {
     const user = await User.findOne({ username });
     const isPasswordCorrect = await bycrptjs.compare(
       password,
-      user?.password || ""
+      user?.password || '',
     );
     if (!user || !isPasswordCorrect) {
-      return resp.status(500).json({ error: "Invalid credentials " });
+      console.error('Username and password do not match or exist');
+      return resp.status(400).json({ error: 'Invalid credentials' });
     }
     generateTokenAndSetCookie(user._id, resp);
     resp.status(200).json({
@@ -63,16 +64,16 @@ export const loginUser = async (req, resp) => {
       profilePic: user.profilePic,
     });
   } catch (err) {
-    console.log("error in login controller", err);
-    resp.status(500).json({ err: "Internal server error" });
+    console.log('error in login controller', err);
+    resp.status(500).json({ err: 'Internal server error' });
   }
 };
 export const logoutUser = async (req, resp) => {
   try {
-    resp.cookie("jwt", "", { maxAge: 0 });
-    resp.status(200).json({ message: "log out successfully" });
+    resp.cookie('jwt', '', { maxAge: 0 });
+    resp.status(200).json({ message: 'log out successfully' });
   } catch (err) {
-    console.log("error in logout controller", err);
-    resp.status(500).json({ err: "Internal server error" });
+    console.log('error in logout controller', err);
+    resp.status(500).json({ err: 'Internal server error' });
   }
 };
