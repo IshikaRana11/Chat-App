@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { toast } from "react-hot-toast";
-import { useAuthContext } from "../context/AuthContext";
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { useAuthContext } from '../context/AuthContext';
 export default function useSignup() {
   const [loading, setLoading] = useState(false);
   const { authUser, setAuthUser } = useAuthContext();
@@ -23,9 +23,9 @@ export default function useSignup() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fullname,
           username,
@@ -40,7 +40,7 @@ export default function useSignup() {
       }
 
       //localstorage
-      localStorage.setItem("chat-user", JSON.stringify(data));
+      localStorage.setItem('chat-user', JSON.stringify(data));
       setAuthUser(data);
       if (!res.ok) {
         const errorText = await res.text();
@@ -49,7 +49,7 @@ export default function useSignup() {
 
       console.log(data);
     } catch (error) {
-      console.error("Fetch error:", error);
+      console.error('Fetch error:', error);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -67,17 +67,17 @@ function handleInputErrors({
   gender,
 }) {
   if (!fullname || !username || !password || !confirmPassword || !gender) {
-    toast.error("Please fill all fields");
+    toast.error('Please fill all fields');
     return false;
   }
 
   if (password !== confirmPassword) {
-    toast.error("Passwords do not match");
+    toast.error('Passwords do not match');
     return false;
   }
 
   if (password.length < 6) {
-    toast.error("Password must be at least 6 characters");
+    toast.error('Password must be at least 6 characters');
     return false;
   }
 
